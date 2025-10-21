@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>مقارنة الكفاءات الواسعة النطاق | سما الأمريكية × الرشد الأمريكية</title>
+<style>
+/* ---------- Reset & Base ---------- */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1220;
+  --card:#151a2e;
+  --muted:#9aa4c7;
+  --text:#eaf0ff;
+  --accent:#7aa2ff;
+  --accent2:#5bf6c8;
+  --warning:#f5c35b;
+  --success:#9dfc86;
+  --ring: 0 0 0 2px color-mix(in oklab, var(--accent) 70%, transparent);
+}
+html,body{height:100%}
+body{
+  font-family: system-ui, "Segoe UI", Tahoma, Arial, "Noto Kufi Arabic", sans-serif;
+  background: radial-gradient(1000px 600px at 80% -10%, #1a1f3f 0%, transparent 60%) no-repeat,
+              radial-gradient(900px 500px at 10% 110%, #102035 0%, transparent 65%) no-repeat,
+              var(--bg);
+  color:var(--text);
+  line-height:1.65;
+  overflow-x:hidden;
+}
+
+/* ---------- Layout: snap slides ---------- */
+main{
+  height:100dvh;
+  overflow-y:auto;
+  scroll-snap-type:y mandatory;
+}
+.section{
+  min-height:100dvh;
+  scroll-snap-align:start;
+  display:grid;
+  place-items:center;
+  padding:clamp(16px,3vw,32px);
+  position:relative;
+}
+
+/* ---------- Top Nav / Progress ---------- */
+.header{
+  position:fixed; inset:16px 16px auto 16px;
+  display:flex; gap:12px; align-items:center; z-index:50;
+  backdrop-filter: blur(10px);
+  background: color-mix(in oklab, var(--card) 85%, transparent);
+  border:1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+  border-radius:16px; padding:10px 14px;
+}
+.header .brand{font-weight:700; letter-spacing:.3px}
+.header .pill{
+  display:flex; gap:8px; align-items:center;
+  background: #0c1022; padding:6px 10px; border-radius:999px; font-size:.9rem;
+  border:1px solid #20284a;
+}
+.progress{
+  position:fixed; inset:auto 16px 16px 16px;
+  height:4px; background:#202547; border-radius:999px; overflow:hidden; z-index:40;
+}
+.progress > i{
+  display:block; height:100%; width:0%; background:
+    linear-gradient(90deg, var(--accent), var(--accent2));
+  transition:width .25s ease;
+}
+
+/* ---------- Cards & micro-interactions ---------- */
+.card{
+  background:linear-gradient(180deg, color-mix(in oklab, var(--card) 90%, transparent), #0b0f22);
+  border:1px solid #232a4f;
+  border-radius:20px;
+  padding:clamp(16px,2.2vw,28px);
+  width:min(1100px, 92vw);
+  box-shadow: 0 20px 60px #00000050, inset 0 1px 0 #ffffff08;
+}
+.grid{
+  display:grid; gap:16px;
+}
+.grid.cols-2{grid-template-columns:repeat(2, minmax(0,1fr))}
+@media (max-width:900px){ .grid.cols-2{grid-template-columns:1fr} }
+.kicker{color:var(--muted); font-size:.95rem}
+.h1{
+  font-size:clamp(1.6rem, 3.2vw, 2.4rem); font-weight:800;
+  line-height:1.25; margin-top:6px; margin-bottom:10px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.sub{color:var(--muted); font-size:1.05rem}
+
+/* Pills */
+.pills{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px}
+.pill2{
+  padding:6px 10px; border:1px dashed #2a3363; color:#c6d2ff; border-radius:12px; font-size:.92rem
+}
+
+/* ---------- Fancy list ---------- */
+.list{
+  display:grid; gap:12px; margin-top:8px
+}
+.item{
+  position:relative; padding:12px 12px 12px 44px;
+  background:#0d1430; border:1px solid #212a57; border-radius:14px;
+  transition: transform .15s ease, border-color .2s ease;
+}
+.item:hover{ transform: translateY(-2px); border-color:#2d3970 }
+.item:before{
+  content:""; position:absolute; inset-inline-start:12px; top:50%; translate:0 -50%;
+  width:12px; height:12px; border-radius:50%;
+  background: radial-gradient(circle at 30% 30%, #fff, var(--accent) 40%, #3956ff 70%);
+  box-shadow: 0 0 18px var(--accent);
+}
+
+/* ---------- Toggle compare ---------- */
+.toggle{
+  display:flex; gap:10px; align-items:center; margin-block:8px 14px
+}
+.switch{
+  inline-size:56px; block-size:30px; border-radius:999px; position:relative; cursor:pointer;
+  background:#0d1230; border:1px solid #273063;
+}
+.switch input{display:none}
+.knob{
+  position:absolute; inset:3px auto 3px 3px; inline-size:24px; block-size:24px; border-radius:50%;
+  background:linear-gradient(180deg,#dce7ff,#a8baff);
+  box-shadow:0 4px 14px #00000060, inset 0 1px #fff6;
+  transition: inset-inline-start .25s ease, background .25s ease;
+}
+.switch input:checked + .knob{ inset-inline-start:29px; background:linear-gradient(180deg,#9ff1d2,#5bf6c8) }
+.badge{padding:4px 10px; border-radius:999px; font-size:.85rem; border:1px solid #2c3566; color:#cfe2ff}
+
+/* ---------- Accordion ---------- */
+.accordion{ display:grid; gap:10px; margin-top:10px }
+.acc{
+  border:1px solid #243063; border-radius:14px; overflow:hidden; background:#0b1128;
+}
+.acc summary{
+  list-style:none; cursor:pointer; padding:14px 16px; font-weight:700; color:#e8eeff;
+  display:flex; align-items:center; justify-content:space-between; gap:10px
+}
+.acc summary::-webkit-details-marker{display:none}
+.acc .content{
+  padding:0 16px 16px; color:#d9e3ff; border-top:1px dashed #273067; background: #0b122f;
+}
+.chev{
+  inline-size:18px; block-size:18px; transition: transform .2s ease; opacity:.8
+}
+details[open] .chev{ transform:rotate(180deg) }
+
+/* ---------- Table-like compare ---------- */
+.compare{
+  display:grid; gap:12px; margin-top:12px
+}
+.row{
+  display:grid; grid-template-columns: 1.1fr .15fr 1.1fr; gap:12px; align-items:stretch;
+}
+@media (max-width:900px){ .row{grid-template-columns:1fr} }
+.cell{
+  padding:14px; border-radius:14px; background:#0d1533; border:1px solid #2a3363;
+}
+.cell .head{font-weight:800; margin-bottom:6px; color:#cfe2ff}
+.sep{
+  display:grid; place-items:center; color:#9bb0ff; font-weight:800;
+}
+
+/* ---------- Footer ---------- */
+.footer{
+  display:flex; justify-content:space-between; gap:12px; align-items:center; color:#a9b6e6; font-size:.95rem
+}
+.btns{display:flex; gap:8px; flex-wrap:wrap}
+.btn{
+  border:1px solid #2a356a; background:#0c1331; color:#dce6ff;
+  padding:10px 14px; border-radius:12px; cursor:pointer;
+  transition: transform .15s ease, border-color .2s ease;
+}
+.btn:hover{ transform: translateY(-2px); border-color:#4052b8 }
+.btn.primary{
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  color:#06121b; font-weight:800; border:none;
+}
+
+/* ---------- Slide headings ---------- */
+.tag{
+  font-size:.85rem; color:#a9b6e6; border:1px solid #2a356a; padding:4px 10px; border-radius:999px; display:inline-block
+}
+
+/* ---------- Tooltip (help) ---------- */
+.help{
+  border-bottom:1px dotted #6d7cc4; cursor:help;
+}
+
+/* ---------- Focus styles ---------- */
+:focus-visible{ outline: none; box-shadow: var(--ring) }
+
+/* ---------- Print (optional) ---------- */
+@media print{
+  .header,.progress{display:none}
+  .section{min-height:auto; page-break-inside:avoid}
+  body{background:#fff; color:#000}
+  .card{box-shadow:none; border:1px solid #ddd}
+}
+</style>
+</head>
+<body>
+
+<!-- Fixed Header -->
+<nav class="header" aria-label="شريط علوي">
+  <span class="brand">مقارنة الكفاءات | سما × الرشد</span>
+  <span class="pill" title="مدة العرض المقترحة">⏱️ 10 دقائق</span>
+  <span class="pill">🎯 5 شرائح</span>
+  <label class="pill" style="gap:10px" title="تبديل وضع المقارنة">
+    <span class="badge">عرض: <b id="modeLabel">التشابهات + الاختلافات</b></span>
+    <span class="switch"><input id="mode" type="checkbox" aria-label="بدّل طريقة العرض"><span class="knob"></span></span>
+  </label>
+  <button class="pill btn" id="darkToggle" title="الوضع الليلي/الفاتح">🌓</button>
+</nav>
+
+<!-- Progress Bar -->
+<div class="progress" aria-hidden="true"><i id="bar"></i></div>
+
+<main id="slides">
+
+  <!-- Slide 1: Title -->
+  <section class="section" id="s1" aria-labelledby="h1">
+    <article class="card grid" style="gap:16px">
+      <div>
+        <span class="kicker">الشريحة 1</span>
+        <h1 class="h1" id="h1">مقارنة مناهج الكفاءات الواسعة النطاق<br>سما الأمريكية × الرشد الأمريكية</h1>
+        <p class="sub">إعداد: <b>Mr. Ahmed Hamza Alhaj Ali – Sama</b> &nbsp;|&nbsp; <b>Mr. Ali Abu Al-Maati – Al Rushd</b></p>
+        <div class="pills">
+          <span class="pill2">منهج أمريكي</span>
+          <span class="pill2">SPEA/KHDA</span>
+          <span class="pill2">مهارات القرن 21</span>
+          <span class="pill2">Rtl + تفاعلية</span>
+        </div>
+      </div>
+      <div class="grid cols-2">
+        <div class="item">
+          نظرة عامة: المدرستان تعتمدان الإطار الأمريكي، مع مواءمة لرؤية الإمارات 2031، والتركيز على المتعلم المفكر، المتعاون، والمبتكر.
+        </div>
+        <div class="item">
+          هدف التحليل: إبراز كيف تُدمَج <span class="help" title="كفاءات عابرة للمواد (تفكير نقدي، تواصل، مواطنة... )">الكفاءات الواسعة</span> داخل المنهج، عبر التخطيط، التعليم، والتقييم.
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- Slide 2: Similarities -->
+  <section class="section" id="s2" aria-labelledby="h2">
+    <article class="card">
+      <span class="tag">الشريحة 2</span>
+      <h2 class="h1" id="h2">أوجه التشابه الأساسية</h2>
+      <p class="sub">محاور مشتركة مدعومة بممارسات صفّية ومهام أدائية</p>
+      <div class="accordion" id="sim">
+        <details class="acc" open>
+          <summary>التفكير النقدي وحل المشكلات <svg class="chev" viewBox="0 0 24 24"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg></summary>
+          <div class="content">
+            <ul class="list">
+              <li class="item">تكليفات واقعية (PBL) في الرياضيات والعلوم لتحليل بيانات واتخاذ قرارات.</li>
+              <li class="item">أسئلة سوكراتية ودفاتر ملاحظات تفكير لتعميق التبرير الرياضي.</li>
+            </ul>
+          </div>
+        </details>
+        <details class="acc">
+          <summary>التواصل والتعاون <svg class="chev" viewBox="0 0 24 24"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg></summary>
+          <div class="content">
+            <ul class="list">
+              <li class="item">عروض طلابية، أدوار فريق، وروبركس للعرض الشفهي والكتابي.</li>
+              <li class="item">تعلم تعاوني منظم (Think–Pair–Share، Jigsaw).</li>
+            </ul>
+          </div>
+        </details>
+        <details class="acc">
+          <summary>الهوية الإماراتية والمواطنة العالمية <svg class="chev" viewBox="0 0 24 24"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg></summary>
+          <div class="content">
+            <ul class="list">
+              <li class="item">ربط الدروس بالاستدامة، الابتكار، والذكاء الاصطناعي.</li>
+              <li class="item">سياقات محلية (النقل، الطاقة، الخدمات) لربط الرياضيات بحياة الطلاب.</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </article>
+  </section>
+
+  <!-- Slide 3: Differences -->
+  <section class="section" id="s3" aria-labelledby="h3">
+    <article class="card">
+      <span class="tag">الشريحة 3</span>
+      <h2 class="h1" id="h3">الفروق في التركيز والتطبيق</h2>
+      <div class="toggle">
+        <span class="badge">عرض الفروق حسب المحور</span>
+      </div>
+      <div class="compare" id="diff">
+        <div class="row">
+          <div class="cell">
+            <div class="head">سما الأمريكية</div>
+            <p><b>تخطيط تعليمي حديث:</b> 5E و I Do–We Do–You Do مع دمج منهجي لـ <b>SEL</b> و <b>ELL</b> وملاءمة شاملة للطلاب SOD/G&T.</p>
+          </div>
+          <div class="sep">↔</div>
+          <div class="cell">
+            <div class="head">الرشد الأمريكية</div>
+            <p><b>تخطيط تقليدي:</b> تركيز مباشر على المخرجات الأكاديمية؛ دمج عاطفي/لغوي أقل ظهورًا على مستوى التخطيط.</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="cell">
+            <div class="head">التقييم</div>
+            <p>روبركس أداء مرتبطة بمعايير <b>SPEA/KHDA</b> وملفات أدلة تعلم مستمرة.</p>
+          </div>
+          <div class="sep">↔</div>
+          <div class="cell">
+            <div class="head">التقييم</div>
+            <p>تركيز أكبر على اختبارات معيارية <b>MAP (NWEA)</b> لمتابعة التقدم الأكاديمي.</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="cell">
+            <div class="head">التكنولوجيا</div>
+            <p>تفاعل نشط عبر <b>Nearpod / Padlet / Quizizz</b>، تصميم خبرات تعلم رقمية.</p>
+          </div>
+          <div class="sep">↔</div>
+          <div class="cell">
+            <div class="head">التكنولوجيا</div>
+            <p>استخدام لعرض المحتوى بدرجة أعلى من التصميم التفاعلي.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- Slide 4: Analytical Matrix -->
+  <section class="section" id="s4" aria-labelledby="h4">
+    <article class="card">
+      <span class="tag">الشريحة 4</span>
+      <h2 class="h1" id="h4">مصفوفة تحليل الكفاءات</h2>
+      <div class="grid cols-2">
+        <div class="cell">
+          <div class="head">الإبداع وريادة الأعمال</div>
+          <p>سما: مشروعات ابتكار وتصميم حلول محلية. <br>الرشد: مهام مشروعية مبسطة.</p>
+        </div>
+        <div class="cell">
+          <div class="head">التواصل والقيادة</div>
+          <p>سما: عروض منظمة وروبركس خطابية. <br>الرشد: عروض تقليدية تركّز على المحتوى.</p>
+        </div>
+        <div class="cell">
+          <div class="head">التعلم الذاتي</div>
+          <p>سما: انعكاسات، ملفات إنجاز رقمية. <br>الرشد: تعلم موجه من المعلم غالبًا.</p>
+        </div>
+        <div class="cell">
+          <div class="head">الإنصاف والشمول</div>
+          <p>سما: خطط SOD مدمجة وتكييفات واضحة. <br>الرشد: تمايز أساسي أقل توثيقًا.</p>
+        </div>
+      </div>
+
+      <details class="acc" style="margin-top:14px">
+        <summary>أدلة داعمة (انقر للعرض) <svg class="chev" viewBox="0 0 24 24"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg></summary>
+        <div class="content">
+          <ul class="list">
+            <li class="item">نماذج روبركس أداء مرتبطة بمخرجات الكفاءات.</li>
+            <li class="item">أمثلة خطط دروس 5E وتطبيق SEL/ELL في الرياضيات.</li>
+            <li class="item">عينات أدوات تقييم أدائي وملاحظات صفية.</li>
+          </ul>
+        </div>
+      </details>
+    </article>
+  </section>
+
+  <!-- Slide 5: Conclusion & Recommendations -->
+  <section class="section" id="s5" aria-labelledby="h5">
+    <article class="card grid" style="gap:16px">
+      <div>
+        <span class="tag">الشريحة 5</span>
+        <h2 class="h1" id="h5">الخلاصة والتوصيات</h2>
+        <p class="sub">ملخص رؤيوي وخطوات عملية قابلة للتنفيذ</p>
+      </div>
+      <div class="grid cols-2">
+        <div class="item">
+          <b>خلاصة:</b> كلا المنهجين يحققان متطلبات المنهج الأمريكي؛ <b>سما</b> تُظهر تكاملاً أعمق للكفاءات عبر التخطيط، التقييم، والتقنية.
+        </div>
+        <div class="item">
+          <b>توصيات:</b> تبادل ممارسات، ورش مشتركة للكفاءات، وتوسيع التقييمات الأدائية لقياس الكفاءات بصورة أوضح.
+        </div>
+      </div>
+
+      <div class="footer">
+        <span>جاهز للعرض خلال 8–10 دقائق • قابل للطباعة</span>
+        <div class="btns">
+          <a class="btn" href="#s1">⟰ إلى البداية</a>
+          <button class="btn primary" id="present">▶︎ وضع العرض</button>
+        </div>
+      </div>
+    </article>
+  </section>
+
+</main>
+
+<script>
+/* Progress bar & snap tracking */
+const main = document.getElementById('slides');
+const bar = document.getElementById('bar');
+main.addEventListener('scroll', ()=>{
+  const progress = (main.scrollTop)/(main.scrollHeight - main.clientHeight);
+  bar.style.width = (progress*100).toFixed(1) + '%';
+});
+
+/* Mode toggle (label only for demo) */
+const mode = document.getElementById('mode');
+const modeLabel = document.getElementById('modeLabel');
+mode.addEventListener('change', ()=>{
+  modeLabel.textContent = mode.checked ? 'الاختلافات أولاً' : 'التشابهات + الاختلافات';
+  // Simple visual reorder: jump to slide 3 if differences-first
+  if(mode.checked) location.hash = '#s3'; else location.hash = '#s2';
+});
+
+/* Dark / Light quick toggle (cosmetic) */
+const darkBtn = document.getElementById('darkToggle');
+let light = false;
+darkBtn.addEventListener('click', ()=>{
+  light = !light;
+  document.documentElement.style.setProperty('--bg', light ? '#f6f8ff' : '#0f1220');
+  document.documentElement.style.setProperty('--card', light ? '#ffffff' : '#151a2e');
+  document.documentElement.style.setProperty('--text', light ? '#0b1022' : '#eaf0ff');
+  document.documentElement.style.setProperty('--muted', light ? '#4b5a86' : '#9aa4c7');
+  document.documentElement.style.setProperty('--accent', light ? '#3b66ff' : '#7aa2ff');
+  document.documentElement.style.setProperty('--accent2', light ? '#0bbd8c' : '#5bf6c8');
+});
+
+/* Presentation mode: full-screen + first slide */
+document.getElementById('present').addEventListener('click', async ()=>{
+  location.hash = '#s1';
+  if (document.fullscreenEnabled && !document.fullscreenElement){
+    await document.documentElement.requestFullscreen().catch(()=>{});
+  }
+});
+
+/* Keyboard quick nav */
+document.addEventListener('keydown', (e)=>{
+  const slides = ['#s1','#s2','#s3','#s4','#s5'];
+  const idx = slides.indexOf(location.hash || '#s1');
+  if(e.key === 'ArrowDown' || e.key === 'PageDown'){ location.hash = slides[Math.min(idx+1, slides.length-1)]; }
+  if(e.key === 'ArrowUp'   || e.key === 'PageUp'){   location.hash = slides[Math.max(idx-1, 0)]; }
+});
+</script>
+</body>
+</html>
